@@ -1,0 +1,7 @@
+
+Table Deals - All columns are text
+    session_id - key
+    deal_id - key
+    viewer_link
+    auction
+    opening_lead

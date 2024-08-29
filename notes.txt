@@ -1,0 +1,24 @@
+
+Programs and files:
+
+notes.txt: This file.
+db-notes.txt: Database design notes.
+viewer-example.txt: Info on how to invoke the BBO hand viewer.
+
+Makefile:
+
+Database:
+create-db.sql: SQL script to create database.
+deals.db: Sqlite3 database of deals.
+db.dump: Latest backup of deals.db.
+
+Python:
+verify-session.py: Verify that viewer link file has no duplicates.
+store-deals.py: Store deals from a session into database.
+add-info.py: Update database with auction and opening lead.
+show-deal.py: Open a specified deal on a given date in BBO to view and play it.
+manage-db.py: Add auction, opening lead, and maybe something else to a deal.
+various pytest programs
+
+Obsolete:
+store-pbn-file.py: Read a complete PBN file of deals and store them in the database.
