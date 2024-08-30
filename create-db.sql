@@ -1,10 +1,10 @@
 
 create table if not exists Deals (
-    session_id text not null,
-    deal_id integer not null,
+    session text not null,
+    board integer not null,
     viewer_link text not null,
     auction text,
     opening_lead text,
     result integer,
-    primary key (session_id, deal_id)
+    primary key (session, board)
 );

@@ -16,7 +16,7 @@ g.session = ''
 
 def main() -> None:
     if len(sys.argv) != 2:
-        print('usage: add-info.py <session_id>', file=sys.stderr)
+        print('usage: add-info.py <session>', file=sys.stderr)
         sys.exit(2)
     g.session = sys.argv[1]
 
@@ -58,7 +58,7 @@ def update_db(board: int, cur: sqlite3.Cursor,
     print(f'update result={result} a={auction} l={lead}')
     stmt = '''update deals
               set result = ?, auction = ?, opening_lead = ?
-              where session_id = ? and deal_id = ?'''
+              where session = ? and board = ?'''
     cur.execute(stmt, (result, auction, lead, g.session, board))
 
 

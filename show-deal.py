@@ -61,7 +61,7 @@ def show_board(board: int) -> None:
     db = sqlite3.connect(DB)
     cur = db.cursor()
     stmt = '''select viewer_link, result, auction, opening_lead from Deals
-    where session_id = ? and deal_id = ?'''
+    where session = ? and board = ?'''
     cur.execute(stmt, (g.session, board))
     for row in cur:
         url, result, auction, lead = row

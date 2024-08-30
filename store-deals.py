@@ -61,7 +61,7 @@ def insert_row(session: str, n: int, line: str, cur: sqlite3.Cursor):
     print(line)
     print(f'insert session {session} board {n}')
     stmt = '''insert into Deals
-              (session_id, deal_id, viewer_link)
+              (session, board, viewer_link)
               values (?, ?, ?)'''
     cur.execute(stmt, (session, n, line))
 
