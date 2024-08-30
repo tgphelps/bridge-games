@@ -33,6 +33,7 @@ def main() -> None:
         else:
             board = int(ans)
         update_board(board, cur)
+        print()
     cur.close()
     db.commit()
     db.close()

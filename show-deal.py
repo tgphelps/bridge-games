@@ -1,26 +1,45 @@
 
+"""
+show-deal.py: Store contents of a hand viewer file in the database.
+
+Usage:
+    show-deal.py [ -t ] -s <session>
+    show-deal.py --version
+    show-deal.py --help
+
+Options:
+    -s <session>        Session-id to use for these hands.
+    --testing, -t       Use for testing code.
+    --version           Show version and exit.
+    -h --help           Show this message and exit.
+"""
+
 import re
 import sqlite3
-import sys
 import webbrowser
+import docopt  # type: ignore
 
 
 DB = 'deals.db'
+VERSION = '0.00'
 
 
 class Globals:
+    testing: bool
     session: str
 
 
 g = Globals()
+g.testing = False
 g.session = ''
 
 
 def main() -> None:
-    if len(sys.argv) != 2:
-        print('usage: show-deals.py <session_id>', file=sys.stderr)
-        sys.exit(2)
-    g.session = sys.argv[1]
+    args = docopt.docopt(__doc__, version=VERSION)
+    g.session = args['-s']
+    if args['--testing']:
+        g.testing = True
+    print(args)
 
     board = 0
     while True:
@@ -47,8 +66,8 @@ def show_board(board: int) -> None:
     for row in cur:
         url, result, auction, lead = row
         url2 = edit_link(url)
-        if auction != '':
-            url2 = insert_good_auction(url2, auction)
+        if auction:  # auction will be None if not added
+            url2 = insert_auction_and_comments(url2, auction, result, lead)
         # print(link2)
         if lead != '':
             print('Opening lead:', lead)
@@ -66,7 +85,8 @@ def edit_link(link: str) -> str:
     return link[0:r[0]] + link[r[1]:]
 
 
-def insert_good_auction(url: str, auction: str) -> str:
+def insert_auction_and_comments(url: str, auction: str,
+                                result: int, lead: str) -> str:
     n = url.find('&a=')
     assert n > 0
     first = url[0: n+3]
@@ -74,9 +94,22 @@ def insert_good_auction(url: str, auction: str) -> str:
     n = rem.find('&')
     assert n >= 0
     last = rem[n:]
+    if g.testing:
+        auction = insert_comments(auction, result, lead)
+        last = last.replace('%20', ' ', -1)
+    print('first:', first)
+    print('auction:', auction)
+    print('last:', last)
     url2 = first + auction + last
-    # print('fixed:', url2)
     return url2
+
+
+def insert_comments(auction: str, result: int, lead: str) -> str:
+    # XXX
+    # return s[0:9] + '{test}' + s[9:]
+    # return f'{{result = {result},  opening lead = {lead}}}' + auction
+    return auction + f'{{result = {result},  opening lead = {lead}}}'
+    # return auction + '{test}' OKAY
 
 
 if __name__ == '__main__':
