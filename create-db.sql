@@ -5,5 +5,6 @@ create table if not exists Deals (
     viewer_link text not null,
     auction text,
     opening_lead text,
+    result integer,
     primary key (session_id, deal_id)
 );
