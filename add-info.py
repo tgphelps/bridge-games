@@ -46,6 +46,7 @@ def update_board(n: int, cur: sqlite3.Cursor) -> None:
 
 
 def read_additional_info(board: int) -> tuple[int, str, str]:
+    "Ask user for result and opening lead of this board."
     print('Adding info for board', board)
     result = int(input('Result? >'))
     auction = input('Auction? >')
@@ -55,6 +56,8 @@ def read_additional_info(board: int) -> tuple[int, str, str]:
 
 def update_db(board: int, cur: sqlite3.Cursor,
               result: int, auction: str, lead: str) -> None:
+    "UPDATE the board in the database."
+    # Note that opening_lead will be '', not NONE, if it was not given.
     print(f'update result={result} a={auction} l={lead}')
     stmt = '''update deals
               set result = ?, auction = ?, opening_lead = ?

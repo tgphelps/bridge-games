@@ -1,4 +1,10 @@
 
+'''
+Usage: verify-session.py <text-file-of-URLs>
+
+Read a file of copy/pasted URLs for the deals in a session.
+Show board numbers, and verify that there are no duplicates.
+'''
 import sys
 
 

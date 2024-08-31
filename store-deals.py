@@ -41,6 +41,7 @@ def main() -> None:
 
 
 def store_deals(fname: str, session: str) -> None:
+    "Read URLs from file and insert into database."
     db = sqlite3.connect(DB)
     cur = db.cursor()
     cur.execute('begin transaction')
@@ -58,6 +59,7 @@ def store_deals(fname: str, session: str) -> None:
 
 
 def insert_row(session: str, n: int, line: str, cur: sqlite3.Cursor):
+    "Insert one deal into the database."
     print(line)
     print(f'insert session {session} board {n}')
     stmt = '''insert into Deals
@@ -67,6 +69,7 @@ def insert_row(session: str, n: int, line: str, cur: sqlite3.Cursor):
 
 
 def board_number(line: str) -> int:
+    "Find board number in URL."
     fld = line.split('&')
     for f in fld:
         if f.startswith('b='):
