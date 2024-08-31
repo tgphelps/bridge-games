@@ -42,6 +42,8 @@ def main() -> None:
         g.testing = True
     # print(args)
 
+    db = sqlite3.connect(DB)
+    cur = db.cursor()
     board = 0
     while True:
         ans = input('Board? >')
@@ -51,17 +53,18 @@ def main() -> None:
             board += 1
         else:
             board = int(ans)
-        show_board(board)
+        show_board(board, cur)
+    cur.close()
+    db.close()
 
 
-def show_board(board: int) -> None:
+def show_board(board: int, cur: sqlite3.Cursor) -> None:
     "Display the board in BBO."
     url = ''
     result = 0
     auction = ''
     lead = ''
-    db = sqlite3.connect(DB)
-    cur = db.cursor()
+
     stmt = '''select viewer_link, result, auction, opening_lead from Deals
     where session = ? and board = ?'''
     cur.execute(stmt, (g.session, board))
@@ -79,8 +82,7 @@ def show_board(board: int) -> None:
             print('Result:', result)
         webbrowser.open(url2)
     if rows_found == 0:
-        print('That deal is not available.')
-    db.close()
+        print(f'Board {board} is not available.')
 
 
 def edit_link(link: str) -> str:
