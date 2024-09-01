@@ -66,16 +66,18 @@ def show_board(board: int, cur: sqlite3.Cursor) -> None:
     auction = ''
     lead = ''
 
-    stmt = '''select viewer_link, result, auction, opening_lead from Deals
-    where session = ? and board = ?'''
+    stmt = '''select viewer_link, dealer, result, auction,
+            opening_lead from Deals
+            where session = ? and board = ?'''
     cur.execute(stmt, (g.session, board))
     rows_found = 0
     for row in cur:
         rows_found += 1
-        url, result, auction, lead = row
+        url, dlr, result, auction, lead = row
         url2 = edit_link(url)
         if auction:  # auction will be None if not added
-            url2 = insert_auction_and_comments(url2, auction, result, lead)
+            url2 = insert_auction_and_comments(url2,
+                                               dlr, auction, result, lead)
         # print(link2)
         if lead != '':
             print('Opening lead:', lead)
@@ -94,9 +96,10 @@ def edit_link(link: str) -> str:
     return link[0:r[0]] + link[r[1]:]
 
 
-def insert_auction_and_comments(url: str, auction: str,
+def insert_auction_and_comments(url: str, dlr: str, auction: str,
                                 result: int, lead: str) -> str:
     "Insert auction, result, and opening lead into the URL."
+    assert dlr in 'NEWS'
     n = url.find('&a=')
     assert n > 0
     first = url[0: n+3]
@@ -105,16 +108,17 @@ def insert_auction_and_comments(url: str, auction: str,
     assert n >= 0
     last = rem[n:]
     # if g.testing:
-    auction = insert_comments(auction, result, lead)
+    auction = insert_comments(dlr, auction, result, lead)
     last = last.replace('%20', ' ', -1)
     # print('first:', first)
     # print('auction:', auction)
     # print('last:', last)
     url2 = first + auction + last
+    print(url2)
     return url2
 
 
-def insert_comments(auction: str, result: int, lead: str) -> str:
+def insert_comments(dlr: str, auction: str, result: int, lead: str) -> str:
     "Insert result and opening lead into auction."
     # return auction + f'{{result = {result},  opening lead = {lead}}}'
     # contract, decl = util.get_contract('n', auction)

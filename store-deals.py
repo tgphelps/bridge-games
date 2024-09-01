@@ -52,29 +52,42 @@ def store_deals(fname: str, session: str) -> None:
                 continue
             assert line.startswith('http:')
             b = board_number(line)
-            insert_row(session, b, line, cur)
+            d = dealer(line)
+            insert_row(session, b, d, line, cur)
     cur.close()
     db.commit()
     db.close()
 
 
-def insert_row(session: str, n: int, line: str, cur: sqlite3.Cursor):
+def insert_row(session: str, board: int, dlr: str,
+               line: str, cur: sqlite3.Cursor):
     "Insert one deal into the database."
     print(line)
-    print(f'insert session {session} board {n}')
+    print(f'insert session {session} board {board}')
     stmt = '''insert into Deals
-              (session, board, viewer_link)
-              values (?, ?, ?)'''
-    cur.execute(stmt, (session, n, line))
+              (session, board, dealer, viewer_link)
+              values (?, ?, ?, ?)'''
+    cur.execute(stmt, (session, board, dlr, line))
 
 
 def board_number(line: str) -> int:
+    return int(get_parameter('b', line))
+
+
+def dealer(line: str) -> str:
+    # This returns an upper-case letter.
+    d = get_parameter('d', line)
+    assert d in 'NEWS'
+    return d
+
+
+def get_parameter(param: str, line: str) -> str:
     "Find board number in URL."
     fld = line.split('&')
     for f in fld:
-        if f.startswith('b='):
+        if f.startswith(param + '='):
             f2 = f.split('=')
-            return int(f2[1])
+            return f2[1]
     assert False
 
 
