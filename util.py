@@ -1,5 +1,5 @@
 
-def parse_contract(auction: str) -> list[str]:
+def _parse_contract(auction: str) -> list[str]:
     a_list: list[str] = []
     assert auction.endswith('ppp')
     just_saw_num = False
@@ -21,15 +21,24 @@ def parse_contract(auction: str) -> list[str]:
     return a_list
 
 
-def find_last_bid(auction: list[str]) -> str:
+def _find_last_bid(auction: list[str]) -> str:
     # XXX fix this double reverse
-    for bid in reversed(auction):
-        if bid not in 'pxr':
-            return bid
+    modifier = ''
+    for call in reversed(auction):
+        print('checking call:', call)
+        if call == 'r':
+            modifier = 'XX'
+            print('modifier:', modifier)
+        elif call == 'x' and modifier == '':
+            modifier = 'X'
+            print('modifier:', modifier)
+        elif call not in 'px':
+            print('call =', call)
+            return call + modifier
     assert False
 
 
-bid_order = {
+_bid_order = {
     'n': 'nesw',
     'e': 'eswn',
     's': 'swne',
@@ -37,10 +46,10 @@ bid_order = {
 }
 
 
-def who_was_bidder(dealer: str, n: int) -> str:
+def _who_was_bidder(dealer: str, n: int) -> str:
     'Return who bid at index n in the auction.'
     n = n % 4
-    return bid_order[dealer][n]
+    return _bid_order[dealer][n]
 
 
 def get_contract(dealer: str, auction: str) -> tuple[str, str]:
@@ -49,13 +58,13 @@ def get_contract(dealer: str, auction: str) -> tuple[str, str]:
     # Returns dealer and 'pass' if passed out.
 
     if auction == 'pppp':
-        return dealer, 'pass'
+        return dealer.upper(), 'PASS'
 
-    auc = parse_contract(auction)
-    bid = find_last_bid(auc)
+    auc = _parse_contract(auction)
+    bid = _find_last_bid(auc)
     # print('auc:', auc, 'bid:', bid)
     suit = bid[1]
-    index_of_bid = auc.index(bid)
+    index_of_bid = auc.index(bid[0:2])
     # print('contract at index:', index_of_bid)
     first_index = index_of_bid % 2  # either 0 or 1
     first_bidder = -1
@@ -68,4 +77,4 @@ def get_contract(dealer: str, auction: str) -> tuple[str, str]:
         # else:
         #   print('no')
 
-    return bid, who_was_bidder(dealer, first_bidder)
+    return bid.upper(), _who_was_bidder(dealer, first_bidder).upper()

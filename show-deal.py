@@ -19,6 +19,7 @@ import re
 import sqlite3
 import webbrowser
 import docopt  # type: ignore
+import util
 
 
 DB = 'deals.db'
@@ -116,6 +117,7 @@ def insert_auction_and_comments(url: str, auction: str,
 def insert_comments(auction: str, result: int, lead: str) -> str:
     "Insert result and opening lead into auction."
     # return auction + f'{{result = {result},  opening lead = {lead}}}'
+    # contract, decl = util.get_contract('n', auction)
     if result > 0:
         s1 = f'Made {result}.   '
     else:
