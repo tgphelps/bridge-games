@@ -30,10 +30,14 @@ def test_passed_out() -> None:
 
 def test_simple_auction() -> None:
     test_cases = [
+        # d    auc     con   dcl
         ('n', '1sppp', '1S', 'N'),
         ('s', '1sppp', '1S', 'S'),
         ('e', '1sp3sppp', '3S', 'E'),
         ('w', '1sx2s3hpp3sppp', '3S', 'W'),
+        ('e', '3dp3nppp', '3N', 'W'),
+        ('n', '1s2sp3sppp', '3S', 'E'),
+        ('s', 'pp1dx1h1s2h3d3h4dppp', '4D', 'E')
     ]
     run_test_cases(test_cases)
 

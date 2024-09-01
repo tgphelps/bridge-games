@@ -121,13 +121,14 @@ def insert_auction_and_comments(url: str, dlr: str, auction: str,
 def insert_comments(dlr: str, auction: str, result: int, lead: str) -> str:
     "Insert result and opening lead into auction."
     # return auction + f'{{result = {result},  opening lead = {lead}}}'
-    # contract, decl = util.get_contract('n', auction)
+    con, decl = util.get_contract(dlr.lower(), auction)
+    print(f'contract: {con}  declarer: {decl}')
     if result > 0:
-        s1 = f'Made {result}.   '
+        s1 = f'making {result}.'
     else:
-        s1 = f'Down {-result} '
+        s1 = f'down {-result}.'
     s2 = 'Opening lead: ' + lead
-    return auction + '{' 'Result: ' + s1 + s2 + '}'
+    return auction + '{ ' + f'Contract: {con} by {decl}, {s1} {s2}' + ' }'
 
 
 if __name__ == '__main__':

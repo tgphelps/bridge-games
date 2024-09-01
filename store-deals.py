@@ -82,7 +82,7 @@ def dealer(line: str) -> str:
 
 
 def get_parameter(param: str, line: str) -> str:
-    "Find board number in URL."
+    "Find value of a parameter in URL."
     fld = line.split('&')
     for f in fld:
         if f.startswith(param + '='):

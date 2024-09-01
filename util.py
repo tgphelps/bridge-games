@@ -25,15 +25,15 @@ def _find_last_bid(auction: list[str]) -> str:
     # XXX fix this double reverse
     modifier = ''
     for call in reversed(auction):
-        print('checking call:', call)
+        # print('checking call:', call)
         if call == 'r':
             modifier = 'XX'
-            print('modifier:', modifier)
+            # print('modifier:', modifier)
         elif call == 'x' and modifier == '':
             modifier = 'X'
-            print('modifier:', modifier)
+            # print('modifier:', modifier)
         elif call not in 'px':
-            print('call =', call)
+            # print('call =', call)
             return call + modifier
     assert False
 
@@ -74,7 +74,8 @@ def get_contract(dealer: str, auction: str) -> tuple[str, str]:
             # print('first bid at:', n)
             first_bidder = n
             break
-        # else:
-        #   print('no')
-
+        else:
+            # print('no')
+            pass
+    # print(f'who was bidder {first_bidder} with dealer {dealer}')
     return bid.upper(), _who_was_bidder(dealer, first_bidder).upper()
