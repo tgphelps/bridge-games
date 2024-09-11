@@ -74,7 +74,7 @@ def show_board(board: int, cur: sqlite3.Cursor) -> None:
     for row in cur:
         rows_found += 1
         url, dlr, result, auction, lead = row
-        url2 = edit_link(url)
+        url2 = remove_comment(url)
         if auction:  # auction will be None if not added
             url2 = insert_auction_and_comments(url2,
                                                dlr, auction, result, lead)
@@ -88,7 +88,8 @@ def show_board(board: int, cur: sqlite3.Cursor) -> None:
         print(f'Board {board} is not available.')
 
 
-def edit_link(link: str) -> str:
+def remove_comment(link: str) -> str:
+    "Remove the comment, including the curly brackets around it."
     p = re.compile('{.*}')
     m = p.search(link)
     assert m is not None
@@ -125,8 +126,10 @@ def insert_comments(dlr: str, auction: str, result: int, lead: str) -> str:
     print(f'contract: {con}  declarer: {decl}')
     if result > 0:
         s1 = f'making {result}.'
-    else:
+    elif result < 0:
         s1 = f'down {-result}.'
+    else:
+        s1 = ''  # XXX Just return auction here.
     s2 = 'Opening lead: ' + lead
     return auction + '{ ' + f'Contract: {con} by {decl}, {s1} {s2}' + ' }'
 

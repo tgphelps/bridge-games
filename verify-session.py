@@ -3,7 +3,8 @@
 Usage: verify-session.py <text-file-of-URLs>
 
 Read a file of copy/pasted URLs for the deals in a session.
-Show board numbers, and verify that there are no duplicates.
+Show board numbers, and verify that there are no duplicated
+boards.
 '''
 import sys
 
@@ -37,6 +38,7 @@ def board_number(line: str) -> int:
 
 
 def show_boards(b: list[int]) -> None:
+    print(f'Total boards in file: {len(b)}')
     print(b)
 
 

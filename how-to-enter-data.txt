@@ -1,0 +1,18 @@
+
+How to enter a new bridge session into the database
+---------------------------------------------------
+
+1. Open the link in the 'your results', the one called "view scores".
+
+2. For each board that we played, left-click the 'play' button next
+to our names, copy the link, and paste it into a file.
+
+3. Run verify-session.py to make sure you have each board entered,
+exactly once: ./verify-session.py <filename>
+
+4. Store the deals into the database:
+   ./store-deals.py -s <session-date> <filename>
+
+5. For each board, gather the auction, result, and opening lead.
+
+6. Run "./add-info.py <session>" to enter the data.

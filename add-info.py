@@ -1,4 +1,9 @@
 
+# This program updates the database by adding the auction, result,
+# and opening lead for given boards.
+#
+# usage: add-info.py <session>
+
 import sqlite3
 import sys
 
@@ -25,10 +30,10 @@ def main() -> None:
     cur = db.cursor()
     cur.execute('begin transaction')
     while True:
-        ans = input('Board? >')
-        if ans == '':
+        ans = input('Board (q to quit)? >')
+        if ans == 'q':
             break
-        if ans == 'n':
+        if ans == '':
             board += 1
         else:
             board = int(ans)
@@ -48,9 +53,14 @@ def update_board(n: int, cur: sqlite3.Cursor) -> None:
 def read_additional_info(board: int) -> tuple[int, str, str]:
     "Ask user for result and opening lead of this board."
     print('Adding info for board', board)
-    result = int(input('Result? >'))
+    result = 0
     auction = input('Auction? >')
+    try:
+        result = int(input('Result? >'))
+    except ValueError:
+        print('ERROR: result is not an integer.')
     lead = input('Opening lead? >')
+
     return result, auction, lead
 
 
