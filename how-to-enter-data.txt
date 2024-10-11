@@ -16,3 +16,10 @@ exactly once: ./verify-session.py <filename>
 5. For each board, gather the auction, result, and opening lead.
 
 6. Run "./add-info.py <session>" to enter the data.
+
+7. Gather matchpoint data for each board.
+
+8. Run "./enter-match-points.py" to enter matchpoint data into a file.
+
+9. Run "./add-match-points.py <file>" to update the database. (You can
+   use '-d' to sanity-check the data first.

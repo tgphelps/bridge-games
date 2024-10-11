@@ -36,7 +36,11 @@ def main() -> None:
         if ans == '':
             board += 1
         else:
-            board = int(ans)
+            try:
+                board = int(ans)
+            except ValueError:
+                print('Invalid board. Exiting.')
+                break
         update_board(board, cur)
         print()
     cur.close()

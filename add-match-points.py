@@ -147,7 +147,9 @@ def add_board_data(cur: sqlite3.Cursor, db: sqlite3.Connection) -> None:
         result = cur.execute(SQL, data)
         if result.rowcount != 1:
             print('ERROR: SQL update failed:', data)
+            print('Rows updated:', result.rowcount)
             sys.exit(1)
+
 
 if __name__ == '__main__':
     main()

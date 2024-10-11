@@ -17,6 +17,7 @@ def main() -> None:
         session, max_match_points = get_session_and_max_points()
         print('session:', session, file=f)
         print('max_match_points:', max_match_points, file=f)
+        print('Enter q to quit.')
         write_board_data(f)
 
 

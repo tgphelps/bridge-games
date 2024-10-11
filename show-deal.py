@@ -67,17 +67,20 @@ def show_board(board: int, cur: sqlite3.Cursor) -> None:
     lead = ''
 
     stmt = '''select viewer_link, dealer, result, auction,
-            opening_lead from Deals
+            opening_lead, max_points, match_points from Deals
             where session = ? and board = ?'''
     cur.execute(stmt, (g.session, board))
     rows_found = 0
     for row in cur:
         rows_found += 1
-        url, dlr, result, auction, lead = row
+        url, dlr, result, auction, lead, max, mp = row
+        if not max:
+            max = 0.0
+            mp = 0.0
         url2 = remove_comment(url)
         if auction:  # auction will be None if not added
-            url2 = insert_auction_and_comments(url2,
-                                               dlr, auction, result, lead)
+            url2 = insert_auction_and_comments(
+                url2, dlr, auction, result, lead, max, mp)
         # print(link2)
         if lead != '':
             print('Opening lead:', lead)
@@ -98,7 +101,8 @@ def remove_comment(link: str) -> str:
 
 
 def insert_auction_and_comments(url: str, dlr: str, auction: str,
-                                result: int, lead: str) -> str:
+                                result: int, lead: str,
+                                max: float, mp: float) -> str:
     "Insert auction, result, and opening lead into the URL."
     assert dlr in 'NEWS'
     n = url.find('&a=')
@@ -109,7 +113,7 @@ def insert_auction_and_comments(url: str, dlr: str, auction: str,
     assert n >= 0
     last = rem[n:]
     # if g.testing:
-    auction = insert_comments(dlr, auction, result, lead)
+    auction = insert_comments(dlr, auction, result, lead, max, mp)
     last = last.replace('%20', ' ', -1)
     # print('first:', first)
     # print('auction:', auction)
@@ -119,7 +123,8 @@ def insert_auction_and_comments(url: str, dlr: str, auction: str,
     return url2
 
 
-def insert_comments(dlr: str, auction: str, result: int, lead: str) -> str:
+def insert_comments(dlr: str, auction: str, result: int,
+                    lead: str, max: float, mp: float) -> str:
     "Insert result and opening lead into auction."
     # return auction + f'{{result = {result},  opening lead = {lead}}}'
     con, decl = util.get_contract(dlr.lower(), auction)
@@ -130,8 +135,12 @@ def insert_comments(dlr: str, auction: str, result: int, lead: str) -> str:
         s1 = f'down {-result}.'
     else:
         s1 = ''  # XXX Just return auction here.
-    s2 = 'Opening lead: ' + lead
-    return auction + '{ ' + f'Contract: {con} by {decl}, {s1} {s2}' + ' }'
+    s2 = f'Opening lead: {lead}.'
+    s3 = ''
+    if max > 0.0:  # If we have matchpoint data
+        s3 = f'Score: {mp:.2f}/{max:.2f}'
+
+    return auction + '{ ' + f'Contract: {con} by {decl}, {s1} {s2} {s3}' + ' }'
 
 
 if __name__ == '__main__':

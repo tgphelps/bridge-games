@@ -50,7 +50,7 @@ def store_deals(fname: str, session: str) -> None:
             line = line.rstrip()
             if line == '':
                 continue
-            assert line.startswith('http:')
+            assert line.startswith('https:')
             b = board_number(line)
             d = dealer(line)
             insert_row(session, b, d, line, cur)
